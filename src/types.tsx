@@ -2,6 +2,12 @@ export type Note = {
   id: string
 } & NoteData
 
+export type SimplifiedNote = {
+  tags: Tag[]
+  title: string
+  id: string
+}
+
 export type RawNote = {
   id: string
 } & RawNoteData
