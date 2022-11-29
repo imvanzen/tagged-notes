@@ -2,8 +2,34 @@ import {Routes, Route, Navigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container } from 'react-bootstrap'
 import NewNote from './components/NewNote'
+import { NoteData, RawNote, Tag } from './types'
+import { useLocalStorage } from './useLocalStorage'
+import { useMemo } from 'react'
+import { v4 as uuidV4 } from 'uuid'
+
 
 function App() {
+  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", [])
+  const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", [])
+
+  const notesWithTags = useMemo(() => {
+    return notes.map(note => {
+      return { ...note, tags: tags.filter(tag => note.tagIds.includes(tag.id)) }
+    })
+  }, [notes, tags])
+
+  function onCreateNote ({tags, ...data}: NoteData) {
+    setNotes(prevNotes => {
+      return [
+          ...prevNotes, {
+            ...data,
+            id: uuidV4(),
+            tagIds: tags.map(tag => tag.id)
+        }
+      ]
+    })
+  }
+
   return (
     <Container className='my-4'>
       <Routes>
