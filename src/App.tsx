@@ -9,6 +9,7 @@ import { v4 as uuidV4 } from 'uuid'
 import NoteList from './components/NoteList'
 import NoteLayout from './components/NoteLayout'
 import Note from './components/Note'
+import EditNote from './components/EditNote'
 
 
 function App() {
@@ -33,6 +34,21 @@ function App() {
     })
   }
 
+  function onUpdateNote (id: string, {tags, ...data}: NoteData) {
+    setNotes(prevNotes => {
+      return prevNotes.map(note => {
+        if (note.id !== id) return note
+
+        return {
+          ...note,
+          ...data,
+          tagIds: tags.map(tag => tag.id)
+        }
+      })
+    })
+  }
+
+
   function addTag (newTag: Tag) {
     setTags(prev => [...prev, newTag])
   }
@@ -51,7 +67,10 @@ function App() {
           } />
         <Route path='/:id' element={<NoteLayout notes={notesWithTags} />}> 
           <Route index element={<Note />} />
-          <Route path='edit' element={<h1>Edit</h1>} />
+          <Route path='edit' element={<EditNote 
+            onSubmit={onUpdateNote} 
+            onAddTag={addTag}
+            availableTags={tags} />} />
         </Route>
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
