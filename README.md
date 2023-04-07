@@ -1,4 +1,4 @@
-# Simple React Notes App
+# Tagged Notes
 
 This App allows to user create, update and delete notes and attach tags to these notes.
 
